@@ -19,6 +19,7 @@ CREATE TABLE Boxes (
  INSERT INTO Warehouses(Code,Location,Capacity) VALUES(3,'New York',7);
  INSERT INTO Warehouses(Code,Location,Capacity) VALUES(4,'Los Angeles',2);
  INSERT INTO Warehouses(Code,Location,Capacity) VALUES(5,'San Francisco',8);
+ INSERT INTO Warehouses(Code,Location,Capacity) VALUES(6,'New York',3);
  
  INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('0MN7','Rocks',180,3);
  INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('4H8P','Rocks',250,1);
@@ -31,6 +32,7 @@ CREATE TABLE Boxes (
  INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('P0H6','Scissors',125,1);
  INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('P2T6','Scissors',150,2);
  INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('TU55','Papers',90,5);
+ INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('H5RT','Papers',200,2);
  
 --3.1 Select all warehouses.
 --3.2 Select all boxes with a value larger than $150.
@@ -87,6 +89,67 @@ FROM Boxes GROUP BY Warehouse;
 
 --3.9 Select the codes of all warehouses that are saturated (a warehouse is saturated if the number of boxes in it is larger than the warehouse's capacity).
 SELECT Code FROM Warehouses WHERE Capacity < (SELECT COUNT(*) FROM Boxes WHERE Warehouse = Warehouses.Code);
+
+--3.10 Select the codes of all the boxes located in Chicago.
+SELECT Boxes.Code
+FROM Boxes JOIN Warehouses
+ON Warehouses.Code = Boxes.Warehouse
+WHERE Warehouses.Location = 'Chicago';
+
+--3.11 Create a new warehouse in New York with a capacity for 3 boxes.
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(6,'New York',3);
+
+--3.12 Create a new box, with code "H5RT", containing "Papers" with a value of $200, and located in warehouse 2.
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('H5RT','Papers',200,2);
+
+--3.13 Reduce the value of all boxes by 15%.
+UPDATE Boxes
+SET Value = Value * 0.85;
+
+SELECT Value FROM Boxes;
+
+--3.14 Remove all boxes with a value lower than $100.
+DELETE FROM Boxes
+WHERE Value < 100;
+
+SELECT * FROM Boxes;
+
+-- 3.15 Remove all boxes from saturated warehouses.
+DELETE FROM Boxes
+WHERE Warehouse IN (SELECT Code FROM Warehouses WHERE Capacity < (SELECT COUNT(*) FROM Boxes WHERE Warehouse = Warehouses.Code));
+
+SELECT * FROM Boxes;
+
+-- 3.16 Add Index for column "Warehouse" in table "boxes"
+-- !!!NOTE!!!: index should NOT be used on small tables in practice
+CREATE INDEX INDEX_WAREHOUSE ON Boxes(Warehouse);
+SELECT * FROM Boxes;
+
+-- 3.17 Print all the existing indexes
+--!!!NOTE!!!: index should NOT be used on small tables in practice
+
+
+-- 3.18 Remove (drop) the index you added just
+--!!!NOTE!!!: index should NOT be used on small tables in practice
+DROP INDEX INDEX_WAREHOUSE;
+SELECT * FROM Boxes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
